@@ -17,7 +17,7 @@ if ! $(id "$USERNAME" &> /dev/null); then
 fi
 
 ## Set umask value if necessary
-if [[ -v $UMASK ]]; then
+if [[ ! -z "$UMASK" ]]; then
     msg "Setting UMASK to provided value..."
     umask $UMASK && read_value=$(umask) && msg "Set UMASK to value: $read_value"
 else
@@ -29,14 +29,14 @@ fi
 if [[ $(id -u) == 0 ]]; then
 
     ## Change user id if specified and is different from current
-    if [[ -v $PUID && "$(id -u $USERNAME)" != "$PUID" ]]; then
+    if [[ ! -z "$PUID" && "$(id -u $USERNAME)" != "$PUID" ]]; then
         usermod -o -u $PUID $USERNAME
         msg "Set '$USERNAME' UID to value: $(id -u $USERNAME)"
     fi
 
     # Change group id if specified and is different from current
     # We assume that the group name matcher the name of the user
-    if [[ -v $PGID && "$(id -g $USERNAME)" != "$PGID" ]]; then
+    if [[ ! -z "$PGID" && "$(id -g $USERNAME)" != "$PGID" ]]; then
         groupmod -o -g $PGID $USERNAME
         msg "Set '$USERNAME' GID to value: $(id -g $USERNAME)"
     fi

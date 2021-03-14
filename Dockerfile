@@ -7,6 +7,10 @@ FROM ubuntu:${UBUNTU_TAG}
 # The umask will be updated during runtime.
 # Unspecified value will leave umask value as is.
 ENV UMASK="" \
+    # If the docker will be run as a root (inside container),
+    # then it is possible to adapt UID and GID during startup with those envs.
+    PUID="" \
+    GUID="" \
     TERM="xterm"
 
 # Update the packages and install common dependencies
@@ -19,7 +23,7 @@ RUN set -x && \
         ca-certificates \
         gosu \
     && \
-    #Cleanup
+    # Cleanup
     apt-get clean autoclean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
