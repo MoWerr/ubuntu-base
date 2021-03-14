@@ -2,17 +2,14 @@
 source ./common.sh
 
 ## Check if all required arguments has been provided
-if [[ $# < 2 ]]; then
-    err "Init script requires at least two arguments: username command [arg]..."
+if [[ $# < 1 ]]; then
+    err "Init script requires at least one argument: command [arg]..."
     exit 1
 fi
 
-## Read name of the executing user
-USERNAME=$1 && shift
-
-## Check if provided user exists
-if ! $(id "$USERNAME" &> /dev/null); then
-    err "Provided user doesn't exist"
+## Check if default user exists
+if ! $(id husky &> /dev/null); then
+    err "Default user doesn't exist"
     exit 1
 fi
 
@@ -25,31 +22,30 @@ else
 fi
 
 ## If we run this script as a root, then we need to set proper permissions
-## and downgrade to the lower privileged user.
+## and downgrade to a lower privileged user.
 if [[ $(id -u) == 0 ]]; then
 
     ## Change user id if specified and is different from current
-    if [[ ! -z "$PUID" && "$(id -u $USERNAME)" != "$PUID" ]]; then
-        usermod -o -u $PUID $USERNAME
-        msg "Set '$USERNAME' UID to value: $(id -u $USERNAME)"
+    if [[ ! -z "$PUID" && "$(id -u husky)" != "$PUID" ]]; then
+        usermod -o -u $PUID husky
+        msg "Set UID value: $(id -u husky)"
     fi
 
     # Change group id if specified and is different from current
-    # We assume that the group name matcher the name of the user
-    if [[ ! -z "$PGID" && "$(id -g $USERNAME)" != "$PGID" ]]; then
-        groupmod -o -g $PGID $USERNAME
-        msg "Set '$USERNAME' GID to value: $(id -g $USERNAME)"
+    if [[ ! -z "$PGID" && "$(id -g husky)" != "$PGID" ]]; then
+        groupmod -o -g $PGID husky
+        msg "Set GID value: $(id -g husky)"
     fi
 
-    msg "Running $* command as a '$USERNAME' user"
-    exec gosu $USERNAME "$@"
+    msg "Running $* command as a default user"
+    exec gosu husky ./entrypoint.sh "$@"
 fi
 
 ## In other case we check if we are running the script as a right user and exec it
-if [[ "$(whoami)" != "$USERNAME" ]]; then
+if [[ "$(whoami)" != "huksy" ]]; then
     err "Container is run with invalid user"
     exit 1
 fi
 
-msg "Running $* command as a '$USERNAME' user (set from docker run command)"
-exec "$@"
+msg "Running $* command as a default user (set from docker run command)"
+exec ./entrypoint.sh "$@"

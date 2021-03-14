@@ -10,7 +10,7 @@ ENV UMASK="" \
     # If the docker will be run as a root (inside container),
     # then it is possible to adapt UID and GID during startup with those envs.
     PUID="" \
-    GUID="" \
+    PGID="" \
     TERM="xterm"
 
 # Update the packages and install common dependencies
@@ -34,6 +34,11 @@ RUN set -x && \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US \
     LC_ALL=en_US.UTF-8
+
+# Create default user and usergroup
+RUN set -x && \
+    groupadd -o -g ${GID} husky && \
+    useradd -md /data -o -u ${UID} -g husky husky
 
 COPY root/ /
 
