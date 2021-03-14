@@ -31,7 +31,7 @@ if [[ $(id -u) == 0 ]]; then
         msg "Set GID value: $(id -g husky)"
     fi
 
-    msg "Running $* command as a default user"
+    msg "Running ./entrypoint.sh $* command as a default user"
     exec gosu husky ./entrypoint.sh "$@"
 fi
 
@@ -41,5 +41,5 @@ if [[ "$(whoami)" != "huksy" ]]; then
     exit 1
 fi
 
-msg "Running $* command as a default user (set from docker run command)"
+msg "Running ./entrypoint.sh $* command as a default user (set from docker run command)"
 exec ./entrypoint.sh "$@"
