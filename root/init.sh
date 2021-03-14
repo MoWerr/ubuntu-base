@@ -1,12 +1,6 @@
 #!/bin/bash
 source ./common.sh
 
-## Check if all required arguments has been provided
-if [[ $# < 1 ]]; then
-    err "Init script requires at least one argument: command [arg]..."
-    exit 1
-fi
-
 ## Check if default user exists
 if ! $(id husky &> /dev/null); then
     err "Default user doesn't exist"
