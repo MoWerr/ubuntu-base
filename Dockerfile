@@ -37,8 +37,8 @@ ENV LANG=en_US.UTF-8 \
 
 # Create default user and usergroup
 RUN set -x && \
-    groupadd -o -g ${GID} husky && \
-    useradd -md /data -o -u ${UID} -g husky husky
+    groupadd husky && \
+    useradd -md /data -g husky husky
 
 COPY root/ /
 
