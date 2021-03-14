@@ -1,0 +1,1 @@
+docker build --build-arg UBUNTU_TAG=18.04 -f $DOCKERFILE_PATH -t $IMAGE_NAME .
