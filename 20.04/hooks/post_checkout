@@ -1,2 +1,2 @@
 #!/bin/bash
-cp ../Dockerfile ./Dockerfile
+cp ../../Dockerfile ../Dockerfile
