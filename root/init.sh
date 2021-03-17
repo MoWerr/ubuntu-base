@@ -15,6 +15,11 @@ else
     msg "UMASK variable is not provided. UMASK won't be changed."
 fi
 
+## Run hook script if it exists
+if [[ -f "/hooks/init.sh" ]]; then
+    /hooks/init.sh
+fi
+
 ## If we run this script as a root, then we need to set proper permissions
 ## and downgrade to a lower privileged user.
 if [[ $(id -u) == 0 ]]; then
