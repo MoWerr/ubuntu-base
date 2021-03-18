@@ -18,6 +18,11 @@ fi
 ## Run hook script if it exists
 if [[ -f "/hooks/init.sh" ]]; then
     /hooks/init.sh
+
+    if [[ $? != 0 ]]; then
+        err "Init hook script failed"
+        exit 1
+    fi
 fi
 
 ## If we run this script as a root, then we need to set proper permissions
