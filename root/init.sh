@@ -15,16 +15,6 @@ else
     msg "UMASK variable is not provided. UMASK won't be changed."
 fi
 
-## Run hook script if it exists
-if [[ -f "/hooks/init.sh" ]]; then
-    /hooks/init.sh
-
-    if [[ $? != 0 ]]; then
-        err "Init hook script failed"
-        exit 1
-    fi
-fi
-
 ## If we run this script as a root, then we need to set proper permissions
 ## and downgrade to a lower privileged user.
 if [[ $(id -u) == 0 ]]; then
@@ -39,6 +29,16 @@ if [[ $(id -u) == 0 ]]; then
     if [[ ! -z "$PGID" && "$(id -g husky)" != "$PGID" ]]; then
         groupmod -o -g $PGID husky
         msg "Set GID value: $(id -g husky)"
+    fi
+
+    ## Run hook script if it exists
+    if [[ -f "/hooks/init.sh" ]]; then
+        /hooks/init.sh
+    
+        if [[ $? != 0 ]]; then
+            err "Init hook script failed"
+            exit 1
+        fi
     fi
 
     msg "Running ./entrypoint.sh $* command as a default user"
