@@ -47,8 +47,23 @@ object Stable_Build : BuildType({
 
     steps {
         exec {
-            name = "Build and upload"
+            name = "Build 'latest'"
             path = "build.sh"
+            arguments = "latest"
+            formatStderrAsError = true
+        }
+
+        exec {
+            name = "Build '20.04'"
+            path = "build.sh"
+            arguments = "20.04"
+            formatStderrAsError = true
+        }
+
+        exec {
+            name = "Build '18.04'"
+            path = "build.sh"
+            arguments = "18.04"
             formatStderrAsError = true
         }
     }
