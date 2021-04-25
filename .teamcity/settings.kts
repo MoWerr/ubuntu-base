@@ -46,26 +46,18 @@ object Stable_Build : BuildType({
     }
 
     steps {
-        exec {
-            name = "Build 'latest'"
-            path = "build.sh"
-            arguments = "latest"
-            formatStderrAsError = true
+        val declareStepForTag: { tag: String ->
+            exec {
+                name = "Build ${tag}"
+                path = "build.sh"
+                arguments = tag
+                formatStderrAsError = true
+            }
         }
 
-        exec {
-            name = "Build '20.04'"
-            path = "build.sh"
-            arguments = "20.04"
-            formatStderrAsError = true
-        }
-
-        exec {
-            name = "Build '18.04'"
-            path = "build.sh"
-            arguments = "18.04"
-            formatStderrAsError = true
-        }
+        declareStepForTag("latest")
+        declareStepForTag("20.04")
+        declareStepForTag("18.04")
     }
 
     triggers {
