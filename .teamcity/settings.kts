@@ -46,9 +46,9 @@ object Stable_Build : BuildType({
     }
 
     steps {
-        val declareStepForTag: { tag: String ->
+        val declareStepForTag = { tag: String ->
             exec {
-                name = "Build ${tag}"
+                name = "Build $tag"
                 path = "build.sh"
                 arguments = tag
                 formatStderrAsError = true
