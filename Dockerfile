@@ -13,6 +13,17 @@ ENV UMASK="" \
     PGID="" \
     TERM="xterm"
 
+# s6 overlay configuration
+ARG S6_VER="v2.2.0.3"
+ARG S6_ARCH="amd64"
+
+# Add s6 overlay
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-${S6_ARCH}-installer /tmp/
+RUN set -x && \
+    chmod +x /tmp/s6-overlay-${S6_ARCH}-installer && \
+    /tmp/s6-overlay-${S6_ARCH}-installer / && \
+    rm /tmp/s6-overlay-${S6_ARCH}-installer
+
 # Update the packages and install common dependencies
 RUN set -x && \
     apt-get update && \
@@ -42,4 +53,4 @@ RUN set -x && \
 
 COPY root/ /
 
-ENTRYPOINT [ "./init.sh" ]
+ENTRYPOINT [ "./init" ]
