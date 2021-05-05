@@ -17,14 +17,7 @@ ENV UMASK="" \
 ARG S6_VER="v2.2.0.3"
 ARG S6_ARCH="amd64"
 
-# Add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-${S6_ARCH}-installer /tmp/
-RUN set -x && \
-    chmod +x /tmp/s6-overlay-${S6_ARCH}-installer && \
-    /tmp/s6-overlay-${S6_ARCH}-installer / && \
-    rm /tmp/s6-overlay-${S6_ARCH}-installer
-
-# Update the packages and install common dependencies
+# Install common dependencies
 RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
@@ -45,6 +38,13 @@ RUN set -x && \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US \
     LC_ALL=en_US.UTF-8
+
+# Add s6 overlay
+RUN set -x && \
+    curl -sL https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-${S6_ARCH}-installer -o /tmp/s6-overlay-installer && \
+    chmod +x /tmp/s6-overlay-installer && \
+    /tmp/s6-overlay-installer / && \
+    rm /tmp/s6-overlay-installer
 
 # Create default user and usergroup
 RUN set -x && \
