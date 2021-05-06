@@ -13,7 +13,11 @@ ENV UMASK="" \
     PGID="" \
     TERM="xterm"
 
-# Update the packages and install common dependencies
+# s6 overlay configuration
+ARG S6_VER="v2.2.0.3"
+ARG S6_ARCH="amd64"
+
+# Install common dependencies
 RUN set -x && \
     apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
@@ -21,7 +25,6 @@ RUN set -x && \
         wget \
         curl \
         ca-certificates \
-        gosu \
     && \
     # Cleanup
     apt-get clean autoclean && \
@@ -35,11 +38,25 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US \
     LC_ALL=en_US.UTF-8
 
+# Add s6 overlay
+RUN set -x && \
+    curl -sL https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-${S6_ARCH}-installer -o /tmp/s6-overlay-installer && \
+    chmod +x /tmp/s6-overlay-installer && \
+    /tmp/s6-overlay-installer / && \
+    rm /tmp/s6-overlay-installer
+
+# Tell s6 overlay to exit whenever the initialization stage fails
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+
 # Create default user and usergroup
 RUN set -x && \
     groupadd husky && \
     useradd -md /data -g husky husky
 
+# Sets environment to be user-like for s6-setuidgid purposes
+ENV HOME=/data \
+    USER=husky
+
 COPY root/ /
 
-ENTRYPOINT [ "./init.sh" ]
+ENTRYPOINT [ "./init" ]
