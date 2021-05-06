@@ -46,10 +46,17 @@ RUN set -x && \
     /tmp/s6-overlay-installer / && \
     rm /tmp/s6-overlay-installer
 
+# Tell s6 overlay to exit whenever the initialization stage fails
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+
 # Create default user and usergroup
 RUN set -x && \
     groupadd husky && \
     useradd -md /data -g husky husky
+
+# Sets environment to be user-like for s6-setuidgid purposes
+ENV HOME=/data \
+    USER=husky
 
 COPY root/ /
 
