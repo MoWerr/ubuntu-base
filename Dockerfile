@@ -9,8 +9,8 @@ FROM ubuntu:${UBUNTU_TAG}
 ENV UMASK="" \
     # If the docker will be run as a root (inside container),
     # then it is possible to adapt UID and GID during startup with those envs.
-    PUID="" \
-    PGID="" \
+    CUSTOM_UID="" \
+    CUSTOM_GID="" \
     TERM="xterm"
 
 # s6 overlay configuration
@@ -48,10 +48,14 @@ RUN set -x && \
 # Tell s6 overlay to exit whenever the initialization stage fails
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
 
+# Arguments that allows to override the default uid/gid values
+ONBUILD ARG UID=1000
+ONBUILD ARG GID=1000
+
 # Create default user and usergroup
-RUN set -x && \
-    groupadd husky && \
-    useradd -md /data -g husky husky
+ONBUILD RUN set -x && \
+    groupadd -o -g $GID husky && \
+    useradd -md /data -g husky -u $UID husky
 
 # Sets environment to be user-like for s6-setuidgid purposes
 ENV HOME=/data \
