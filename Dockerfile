@@ -25,7 +25,6 @@ RUN set -x && \
         wget \
         curl \
         ca-certificates \
-        gosu \
     && \
     # Cleanup
     apt-get clean autoclean && \
