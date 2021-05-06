@@ -1,6 +1,12 @@
 #!/usr/bin/with-contenv bash
 source ./common.sh
 
+## Check if default user exists
+if ! $(id husky &> /dev/null); then
+    err "Default user doesn't exist"
+    exit 1
+fi
+
 ## If we run this script as a root, then we need to set proper permissions and ids
 if [[ $(id -u) == 0 ]]; then
 
