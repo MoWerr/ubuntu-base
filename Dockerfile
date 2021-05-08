@@ -4,6 +4,10 @@ ARG UBUNTU_TAG="latest"
 # We always base on ubuntu image.
 FROM ubuntu:${UBUNTU_TAG}
 
+# Read data from buildx
+ARG TARGETARCH
+ENV TARGETARCH=${TARGETARCH:-linux/amd64}
+
 # The umask will be updated during runtime.
 # Unspecified value will leave umask value as is.
 ENV UMASK="" \
@@ -12,10 +16,6 @@ ENV UMASK="" \
     CUSTOM_UID="" \
     CUSTOM_GID="" \
     TERM="xterm"
-
-# s6 overlay configuration
-ARG S6_VER="v2.2.0.3"
-ARG S6_ARCH="amd64"
 
 # Install common dependencies
 RUN set -x && \
@@ -38,9 +38,16 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US \
     LC_ALL=en_US.UTF-8
 
+# s6 overlay configuration
+# s6 architecture will be determined from $TARGETARCH variable
+ARG S6_VER="v2.2.0.3"
+
+# Load script that allows to determine the s6 architecture
+COPY root/etc/s6-arch-picker.sh /etc/s6-arch-picker.sh
+
 # Add s6 overlay
 RUN set -x && \
-    curl -sL https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-${S6_ARCH}-installer -o /tmp/s6-overlay-installer && \
+    curl -sL https://github.com/just-containers/s6-overlay/releases/download/${S6_VER}/s6-overlay-$(/etc/s6-arch-picker.sh)-installer -o /tmp/s6-overlay-installer && \
     chmod +x /tmp/s6-overlay-installer && \
     /tmp/s6-overlay-installer / && \
     rm /tmp/s6-overlay-installer
