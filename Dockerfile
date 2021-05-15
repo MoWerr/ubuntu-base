@@ -4,7 +4,7 @@ ARG UBUNTU_TAG="latest"
 # We always base on ubuntu image.
 FROM ubuntu:${UBUNTU_TAG}
 
-# Read data from buildx
+# Read data from buildx.
 ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH:-linux/amd64}
 
