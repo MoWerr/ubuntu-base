@@ -3,8 +3,8 @@
 ## Table of contents
 * [Overview](#overview)
 * [Releases](#releases)
-* [`OBUILD` arguments](#onbuild-arguments)
-* [Environment variables](#env-variables)
+* [`ONBUILD` arguments](#onbuild-arguments)
+* [Environment variables](#environment-variables)
 * [Build `ARG`s](#build-args)
 * [Default user](#default-user)
 * [Working directory](#working-directory)
@@ -27,7 +27,7 @@ Currently there are ready-to-use images available on [Docker Hub](https://hub.do
 | `20.04`         | Uses `ubuntu:20.04` as a base image.
 | `18.04`         | Uses `ubuntu:18.04` as a base image.
 
-## `OBUILD` arguments
+## `ONBUILD` arguments
 As this image is designed to be a base for others it includes some useful `ONBUILD` arguments. All of them have default values, so specifying them during child image build is fully optional.
 
 | Argument    | Default value     | Description
